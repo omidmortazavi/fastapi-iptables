@@ -1,14 +1,25 @@
 import requests
+import logging
+from rich.logging import RichHandler
 
 base_url = "http://127.0.0.1:8000"
 
 
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(message)s",
+    datefmt="[%X]",
+    handlers=[RichHandler()]
+)
+log = logging.getLogger("iptables")
+
 def make_request(method, url):
     response = method(url)
-    print(f"{method.__name__.upper()} {url}")
-    print(f"Response: {response.status_code}")
-    print(response.json())
-    print()
+    log.info(f"{method.__name__.upper()} {url}")
+    log.info(f"Response: {response.status_code}")
+    log.info(response.json())
+    log.info("")
 
 
 def get_tables():
@@ -27,31 +38,26 @@ def delete_chain():
 
 
 if __name__ == "__main__":
-    print("Running iptables operations...")
+    log.info("Running iptables operations...")
 
     # Get tables
-    print("Getting tables...")
+    log.info("Getting tables...")
     get_tables()
-    print("############")
 
     # Add chain
-    print("Adding chain...")
+    log.info("Adding chain...")
     put_chain()
-    print("Chain added.")
-    print("############")
+    log.info("Chain added.")
 
     # Get tables after adding chain
-    print("Getting tables after adding chain...")
+    log.info("Getting tables after adding chain...")
     get_tables()
-    print("############")
 
     # Delete chain
-    print("Deleting chain...")
+    log.info("Deleting chain...")
     delete_chain()
-    print("Chain deleted.")
-    print("############")
+    log.info("Chain deleted.")
 
     # Get tables after deleting chain
-    print("Getting tables after deleting chain...")
+    log.info("Getting tables after deleting chain...")
     get_tables()
-    print("############")
